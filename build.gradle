@@ -1,0 +1,32 @@
+group 'test.aws'
+version '1.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+    }
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom 'software.amazon.awssdk:bom:2.2.0'
+    }
+}
+
+dependencies {
+    compile 'software.amazon.awssdk:s3'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
