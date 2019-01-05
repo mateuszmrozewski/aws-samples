@@ -19,11 +19,13 @@ import java.util.Base64;
  */
 public class SSEC {
     public static void main(String[] args) throws NoSuchAlgorithmException {
+        // Generate a random 256 bit AES key and encode it in Base64
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(256, new SecureRandom());
         SecretKey secretKey = keyGenerator.generateKey();
         String secretKeyString = Base64.getEncoder().encodeToString(secretKey.getEncoded());
 
+        // Generate md5 digest of the key and encode it in Base64
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         md5.update(secretKey.getEncoded());
         byte[] digest = md5.digest();
@@ -31,12 +33,13 @@ public class SSEC {
 
         S3Client client = S3Client.builder().region(Region.AP_SOUTHEAST_2).build();
 
+
         PutObjectRequest putRequest = PutObjectRequest.builder()
                 .bucket("my-encrypted-bucket-ssec")
                 .key("my-file.png")
-                .sseCustomerAlgorithm("AES256")
-                .sseCustomerKey(secretKeyString)
-                .sseCustomerKeyMD5(md5String)
+                .sseCustomerAlgorithm("AES256") // only AES256 supported
+                .sseCustomerKey(secretKeyString) // pass the key
+                .sseCustomerKeyMD5(md5String) // and md5 of the key
                 .build();
         client.putObject(putRequest, Paths.get("my-file.png"));
 
