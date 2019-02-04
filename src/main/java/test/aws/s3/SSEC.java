@@ -1,4 +1,4 @@
-package test.aws;
+package test.aws.s3;
 
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -35,7 +35,7 @@ public class SSEC {
 
 
         PutObjectRequest putRequest = PutObjectRequest.builder()
-                .bucket("my-encrypted-bucket-ssec")
+                .bucket("myunencrypted-bucket")
                 .key("my-file.png")
                 .sseCustomerAlgorithm("AES256") // only AES256 supported
                 .sseCustomerKey(secretKeyString) // pass the key
@@ -44,7 +44,7 @@ public class SSEC {
         client.putObject(putRequest, Paths.get("my-file.png"));
 
         GetObjectRequest getRequest = GetObjectRequest.builder()
-                .bucket("my-encrypted-bucket-ssec")
+                .bucket("myunencrypted-bucket")
                 .key("my-file.png")
                 .sseCustomerAlgorithm("AES256")
                 .sseCustomerKey(secretKeyString)
